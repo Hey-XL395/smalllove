@@ -1,0 +1,70 @@
+后台管理系统项目总结：
+一，APP总结：
+（1）登录页面只显示登陆或注册
+<router-view v-if $router.path==='/Land' ><router-view/>
+ v- else
+（2）在App中引入  @import "./style/common";修改element的属性
+.取一个名字{
+  .el-card__body{
+    padding: 0 ;
+  }
+}
+将取得名字放到需要修改的element组件的父盒子中
+（3）头部组件用position定位时会脱离文档流，在App中将el-main等设为  margin-top: 60px;
+二，头部总结：
+（1）    this.user = localStorage.getItem("user");
+       this.time = localStorage.getItem("date")
+       setItem存，getItem取，removeItem删具体某一项，clear删除所有
+（2）  取得时间，百度MDN，搜索date方法，
+        let time1 = time.getHours();
+        直接取得当前小时数进行判断
+三，首页总结：
+（1）使用弹性盒子
+（2）计数器vue-count-to，安装方式npm install vue-count-to，
+使用：<countTo :startVal='startVal' :endVal='endVal' :duration='持续时间（毫秒）'></countTo>
+在单文件中引入，在data中返回开始时间和结束时间
+（3）v-charts图表库 https://v-charts.js.org/#/bar
+（4）在element表格label中加入￥
+    <el-table-column prop="price" label="Price" width="380">
+    row代表当前点击的行内信息
+    <template slot-scope="scope">
+    ￥{{ scope.row.price }}
+    </template>
+    </el-table-column>
+（3）  //<el-table-column
+     //  里面加，表头居中
+     //header-align="center"
+     //align="center"
+四，登录注册总结：
+（1）处理登陆时间
+this.date = new Date();获取当前时间对象
+let date1 = this.$moment(this.date).format(
+"YYYY年MM月DD日HH点mm分ss秒"
+);
+安装：npm i -S dayjs
+引入：import moment from 'dayjs'
+挂载：Vue.prototype.$moment = moment;
+（2）请求写在点击事件内部，不能单独写事件来调用
+（3）防抖
+created() {
+this.点击时触发该事件的名称 = this.$lodash.debounce(this.实际登陆事件名称, 350);
+},
+（4）正则表达式
+let reg = new RegExp(/[\u4e00-\u9fa5]/);
+if (this.ruleForm.name.match(reg)) {
+this.$message({
+ type: "warning",
+ message: "用户名不能为中文"
+});
+四，导出总结：
+(1)下载当前页数据只需要和分页一样截取就是了
+当前页 1 每页 20条  1-20
+当前页 2 每页 20条  20-40
+当前页 3 每页 20条  40-60
+当前页 4 每页 20条  60-80
+（当前页-1）*10，每页条数*当前页  slice
+
+(2)修改当前条信息
+改造element的对话框，dialogFormVisible=true就弹出来了
+直接在需要的点击事件中改变dialogFormVisible的值
+五，统计总结：

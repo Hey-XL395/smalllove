@@ -15,7 +15,7 @@
           class="demo-ruleForm"
           label-position="left"
         >
-          <el-form-item label="请输入用户名" prop="name" >
+          <el-form-item label="请输入用户名" prop="name">
             <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
         </el-form>
@@ -27,7 +27,6 @@
           label-width="130px"
           class="demo-ruleForm"
           label-position="left"
-
         >
           <el-form-item label="请输入密码" prop="password">
             <!--            隐藏密码-->
@@ -47,7 +46,6 @@
           label-width="130px"
           class="demo-ruleForm-Verification"
           label-position="left"
-
         >
           <el-form-item label="请输入验证码" prop="Verification">
             <el-input v-model="ruleForm.Verification"></el-input
@@ -59,8 +57,7 @@
             <el-button
               class="btn"
               type="primary"
-              @click="Land"
-              @keydown.enter="Land"
+              @click="postLogin"
               :plain="true"
               >登陆</el-button
             >
@@ -114,6 +111,7 @@ export default {
           message: "请输入账号密码",
           type: "warning"
         });
+        return
       }
       if (this.ruleForm.Verification === "") {
         this.$message({
@@ -166,7 +164,7 @@ export default {
                 let date1 = this.$moment(this.date).format(
                   "YYYY年MM月DD日HH点mm分ss秒"
                 );
-                localStorage.setItem("date",date1)
+                localStorage.setItem("date", date1);
                 // let date=this.$mount()
                 // let time1=time.getTime()
                 // this.$store.state.timedata=time1
@@ -215,9 +213,9 @@ export default {
   mounted() {
     this.getCaptcha();
   },
-  // created() {
-  //   this.postLogin = this.$lodash.debounce(this.postLogin1, 500);
-  // },
+  created() {
+    this.postLogin = this.$lodash.debounce(this.Land, 350);
+  },
   filters: {},
   computed: {},
   watch: {},

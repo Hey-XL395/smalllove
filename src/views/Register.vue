@@ -122,8 +122,8 @@ export default {
             username: this.ruleForm.name,
             password: this.ruleForm.password
           })
-          .then(req => {
-            this.msg = req.data;
+          .then(res => {
+            this.msg = res.data;
             console.log(this.msg);
             if (this.msg.code === 1) {
               this.$message({

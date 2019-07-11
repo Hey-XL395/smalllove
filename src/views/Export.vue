@@ -49,9 +49,12 @@
         </el-table-column>
         <el-table-column label="操作" header-align="center" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-              >编辑</el-button
+            <el-button
+              type="primary"
+              @click="handleEdit(scope.$index, scope.row)"
+              >buttonCont</el-button
             >
+            <el-button size="mini" @click="edit(scope)">编辑</el-button>
             <el-button
               size="mini"
               type="danger"
@@ -107,6 +110,28 @@
         >
       </el-row>
     </div>
+    <el-dialog title="修改" :visible.sync="dialogFormVisible">
+      <el-form>
+        <el-form-item label="商品名称" label-width="120px">
+          <el-input v-model="editObj.NAME" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="原价" label-width="120px">
+          <el-input v-model="editObj.ORI_PRICE" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="现价" label-width="120px">
+          <el-input
+            v-model="editObj.PRESENT_PRICE"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -117,13 +142,14 @@ export default {
   props: {},
   data() {
     return {
+      dialogTableVisible: false,
+      dialogFormVisible: false,
       tableData: [],
       tableDataVIP: [],
       currentPage1: 1,
       input: "",
       val1: 10,
       val2: 1,
-      str: "",
       length: 0,
       json_fields: {
         商品名称: "NAME",
@@ -138,10 +164,16 @@ export default {
             value: "utf-8"
           }
         ]
-      ]
+      ],
+      editObj: {}
     };
   },
   methods: {
+    edit(scope) {
+      this.dialogFormVisible = true;
+      this.editObj = scope.row;
+      console.log(this.editObj);
+    },
     handleSizeChange(val) {
       this.val1 = val;
     },
@@ -153,17 +185,24 @@ export default {
       this.$prompt("请修改商品名称", "修改信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        inputValue:row.NAME,
+        inputValue: row.NAME
         // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
         // inputErrorMessage: "邮箱格式不正确"
       })
         .then(({ value }) => {
-          this.tableData[index].NAME=value
+          this.tableData[index].NAME = value;
           console.log(value);
-          this.$message({
-            type: "success",
-            message: "修改成功"
+          this.$prompt("请修改商品原价", "修改信息", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            inputValue: row.ORI_PRICE
+            // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+            // inputErrorMessage: "邮箱格式不正确"
+          }).then(({ value }) => {
+            this.tableData[index].ORI_PRICE = value;
+            console.log(value);
           });
+
         })
         .catch(() => {
           this.$message({
@@ -171,37 +210,6 @@ export default {
             message: "取消输入"
           });
         });
-      // const h = this.$createElement;
-      // this.$msgbox({
-      //   title: "消息",
-      //   // null写样式
-      //   message: h("p", null, [
-      //     h("el-input", { inputValue: row.NAME }, "value "),
-      //     h("el-input", { inputValue: row.GOODS_SERIAL_NUMBER }, "VNode"),
-      //     h("el-input", { inputValue: row.ORI_PRICE }, "value "),
-      //     h("el-input", { inputValue: row.PRESENT_PRICE }, "VNode")
-      //   ]),
-      //   showCancelButton: true,
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消"
-      // })
-      //   .then(({ value }) => {
-      //     this.tableData[index].NAME = value;
-      //     this.tableData[index].GOODS_SERIAL_NUMBER = value;
-      //     this.tableData[index].ORI_PRICE = value;
-      //     this.tableData[index].PRESENT_PRICE = value;
-      //     console.log(value);
-      //     this.$message({
-      //       type: "success",
-      //       message: "修改成功"
-      //     });
-      //   })
-      //   .catch(() => {
-      //     this.$message({
-      //       type: "info",
-      //       message: "取消输入"
-      //     });
-      //   });
     },
     handleDelete(index) {
       this.tableData.splice(index, 1);
@@ -213,15 +221,6 @@ export default {
           this.tableData = res.data.data;
           console.log(this.tableData);
           this.tableDataVIP = this.tableData;
-          this.tableData.map(item => {
-            // console.log(item);
-            // 只需要页面上现实的数据，在这些数据里面实现筛选
-            this.str +=
-              item.NAME +
-              item.GOODS_SERIAL_NUMBER +
-              item.ORI_PRICE +
-              item.PRESENT_PRICE;
-          });
         })
         .catch(e => {
           console.log(e);
@@ -230,27 +229,27 @@ export default {
     inp(val) {
       // 第一种 这个return没用到没用到也可以？？ return 返回item吗？这个的效果不是应该和第三种一样吗，为什么这个能实现过滤
       this.tableData = this.tableDataVIP;
-      // this.tableData = this.tableData.filter(item => {
-      //   let str = "";
-      //   for (let i in item) {
-      //     str += item[i];
-      //   }
-      //   return str.indexOf(val) !== -1;
-      // });
+      this.tableData = this.tableData.filter(item => {
+        let str = "";
+        for (let i in item) {
+          str = str+item.NAME+item.GOODS_SERIAL_NUMBER+item.ORI_PRICE+item.PRESENT_PRICE;
+        }
+        return str.indexOf(val) !== -1;
+      });
       // 第二种 判断条件 用到了item
       // this.tableData = this.tableData.filter(item => {
       //   return JSON.stringify(item).indexOf(val) !== -1;
       // });
       // 第三种 this.str.indexof能返回相应下标 效果：只要输入的值源字符串中有就全显示，只要没有就全不显示为什么一和二效果不同
-      this.tableData = this.tableData.filter(item => {
-        // console.log(item);
-        // return this.str.indexOf(val) !== -1;
-        if (this.str.indexOf(val) !== -1) {
-          // console.log(item);
-          return item;
-        }
-      });
-      console.log(this.str);
+    //   this.tableData = this.tableData.filter(item => {
+    //     // console.log(item);
+    //     // return this.str.indexOf(val) !== -1;
+    //     if (this.str.indexOf(val) !== -1) {
+    //       // console.log(item);
+    //       return item;
+    //     }
+    //   });
+    //   console.log(this.str);
     }
   },
   mounted() {

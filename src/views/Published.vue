@@ -97,20 +97,6 @@
           header-align="center"
           align="center"
         >
-          <!--          <template slot-scope="scope">-->
-          <!--            <el-tag-->
-          <!--              :type="scope.row.category === '小程序' ? 'primary' : 'success'"-->
-          <!--              disable-transitions-->
-          <!--              ><span v-if="scope.row.category === 'JavaScript'">JavaScript</span-->
-          <!--              ><span v-if="scope.row.category === 'Vue'">Vue</span-->
-          <!--              ><span v-if="scope.row.category === 'React'">React</span-->
-          <!--              ><span v-if="scope.row.category === 'Node.js'">Node.js</span-->
-          <!--              ><span v-if="scope.row.category === '性能优化'">性能优化</span-->
-          <!--              ><span v-if="scope.row.category === '小程序'">小程序</span-->
-          <!--              ><span v-if="scope.row.category === '工具类'">工具类</span-->
-          <!--              ><span v-if="scope.row.category === '其他'">其他</span></el-tag-->
-          <!--            >-->
-          <!--          </template>-->
           <template slot-scope="scope">
             <el-tag type="success" v-if="scope.row.category === 'JavaScript'"
               >JavaScript</el-tag
@@ -292,6 +278,9 @@ export default {
       this.flag = false;
     },
     push() {
+      if (this.date === "") {
+        this.date = new Date();
+      }
       this.$axios
         .req("/api/article/update", {
           id: this.id,

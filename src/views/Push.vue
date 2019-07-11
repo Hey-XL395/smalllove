@@ -143,7 +143,8 @@ export default {
         delivery: false,
         type: [],
         resource: "",
-        desc: ""
+        desc: "",
+        star:''
       },
       rules: {
         title: [
@@ -192,6 +193,9 @@ export default {
       this.flag = true;
     },
     postArticle() {
+      if (this.date === "") {
+        this.date = new Date();
+      }
       this.$axios
         .req("/api/article/create", {
           title: this.ruleForm.title,
@@ -201,7 +205,7 @@ export default {
           source: this.ruleForm.source,
           star: this.ruleForm.star,
           text: this.value,
-          date: this.date
+          date: this.$moment(this.date).format("YYYY年MM月DD日hh时mm分ss秒")
         })
         .then(res => {
           console.log(res);

@@ -72,7 +72,7 @@ export default {
   props: {},
   data() {
     return {
-      activeName: "second",
+      activeName: "first",
       arr: [
         {
           flag: "yes",
