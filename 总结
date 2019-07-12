@@ -68,3 +68,23 @@ this.$message({
 改造element的对话框，dialogFormVisible=true就弹出来了
 直接在需要的点击事件中改变dialogFormVisible的值
 五，统计总结：
+（1）本来统计中的数据全是写在计算属性中的，但是不应该这样写，直接写在
+请求数据时就可以了，所有数据会在进页面请求数据时就开始刷新。
+首先格式化时间dayjs，将时间连接符更改为-，item.date.replace("年", "-");
+item.date = this.$moment(this.$moment(item.date).toDate()).format(
+"YYYY年MM月DD日"
+);
+toDate将时间转换为时间对象但是连接符必须是-
+this.$moment(item.date).toDate()，调用dayjs的方法
+（2）lodash groupBy方法，let group = _.groupBy(this.allArticle, "category");
+返回新对象let group = _.groupBy(this.allArticle, "需要统计的属性");
+for in 循环出对象group的键和值，需要的数据一一对应再push进数组中。
+（3）lodash groupBy方法的第二种写法，
+let group2 = _.groupBy(this.allArticle, n => {
+return n.date.toString().substring(0, 11);
+});返回一个需要统计的字段
+六：退出总结：
+清除        localStorage.removeItem("user");不登录就进不来。
+七：图片上传总结
+支持裁剪的上传方式
+需要注意单文件引入和整体引入import myUpload from "vue-image-crop-upload";只需要这个

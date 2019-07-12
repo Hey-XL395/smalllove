@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <style lang="scss">
-  @import "./style/common";
+@import "./style/common";
 * {
   padding: 0;
   margin: 0;

@@ -50,7 +50,6 @@
 
 <script>
 import myUpload from "vue-image-crop-upload";
-
 export default {
   name: "PictureUpload",
   components: { myUpload },
